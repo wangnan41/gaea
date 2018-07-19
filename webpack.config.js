@@ -142,7 +142,7 @@ if (isProduction || isUpload) {
     if (isUpload) {
         webpackConfig.plugins = (webpackConfig.plugins || []).concat([
             new WebpackUploadPlugin({
-                host: "{{uploadHost}}",
+                host: "",//上传服务器地址
                 source: 'build',
                 serverDir: config.ftpServer,
                 target: config.ftpTarget
