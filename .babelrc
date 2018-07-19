@@ -1,0 +1,18 @@
+{
+    "presets": [
+        ["env",
+        {
+            "targets":{
+                "ios": "7.0",
+                "android": "4.0",
+                "browsers": ["> 2%"]
+            },
+            "useBuiltIns": true
+        }]
+    ],
+    "plugins": [
+        ["transform-es2015-for-of",{"loose":true}],
+        ["syntax-dynamic-import"],
+        ["transform-object-assign"]
+        ]
+}
