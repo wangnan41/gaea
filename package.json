@@ -3,9 +3,9 @@
   "description": "{{projectDescription}}",
   "version": "{{projectVersion}}",
   "author": "wang nan",
-  "publicPath": "{{uploadPath}}",
-  "ftpServer": "{{ftpServer}}",
-  "ftpTarget": "{{ftpTarget}}",
+  "publicPath": "",
+  "ftpServer": "",
+  "ftpTarget": "",
   "scripts": {
     "dev": "webpack-dev-server -d --open --progress",
     "build": "cross-env NODE_ENV=production webpack --hide-modules --progress",
