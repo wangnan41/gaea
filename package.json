@@ -2,7 +2,7 @@
   "name": "{{projectName}}",
   "description": "{{projectDescription}}",
   "version": "{{projectVersion}}",
-  "author": "wang nan",
+  "author": "{{author}}",
   "publicPath": "//static.360buyimg.com/exploit/gaea",
   "ftpServer": "static.360buyimg.com",
   "ftpTarget": "exploit/gaea",
