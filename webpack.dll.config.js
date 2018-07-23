@@ -12,7 +12,7 @@ const bannerTxt = config.name + ' ' + config.version + ' ' + curTime;
 module.exports = {
 	//你想要打包的模块数组
 	entry:{
-		vendor:['vue','axios','vue-router','qs']
+		vendor:{{bucket}}
 	},
 	output:{
 		path:path.join(__dirname,'/static/'),
