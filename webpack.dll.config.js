@@ -9,10 +9,13 @@ const curTime = curDate.getFullYear() + '/' + (curDate.getMonth() + 1) + '/' + c
 
 const bannerTxt = config.name + ' ' + config.version + ' ' + curTime; 
 
+const vendorStr = "{{bucket}}";
+const vendor = vendoStr.split(',');
+
 module.exports = {
 	//你想要打包的模块数组
 	entry:{
-		vendor:{{bucket}}
+		vendor:vendor
 	},
 	output:{
 		path:path.join(__dirname,'/static/'),
