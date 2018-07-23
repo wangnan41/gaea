@@ -10,7 +10,7 @@ const curTime = curDate.getFullYear() + '/' + (curDate.getMonth() + 1) + '/' + c
 const bannerTxt = config.name + ' ' + config.version + ' ' + curTime; 
 
 const vendorStr = "{{bucket}}";
-const vendor = vendoStr.split(',');
+const vendor = vendorStr.split(',');
 
 module.exports = {
 	//你想要打包的模块数组
