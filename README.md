@@ -1,21 +1,13 @@
 # 欢迎使用 Gaea 脚手架
 
 ------
-
-一个基于webpack的vue单页面应用脚手架，源自京东APP/京东ME/京东M站等项目。
+Gaea-cli 的vue 单页面webpack 模版代码
 
 
 ## 使用方法
 
 ``` bash
-# 克隆本项目代码
-git clone git@git.jd.com:lifeifan3/gaea.git
 
-# 修改远程git库地址
-git remote set-url origin 你的项目地址
-
-# 切换到dev分支
-git checkout dev
 
 # 安装依赖包
 npm install
@@ -34,4 +26,4 @@ npm run build
 npm run upload
 ```
 
-* 文档 http://cf.jd.com/pages/viewpage.action?pageId=100878007
+
