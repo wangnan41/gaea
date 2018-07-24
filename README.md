@@ -14,7 +14,7 @@ npm install
 
 # 抽离项目中用的第三方库
 
-npm run dll (只需要执行一次，如果对全家桶依赖文件有修改，如果更改了webpack.dll.config.js 的库依赖新增或者删除，请重新执行一次)
+npm run dll 
 
 # 启动本地调试服务器
 npm run dev
