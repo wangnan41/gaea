@@ -13,6 +13,7 @@
     "plugins": [
         ["transform-es2015-for-of",{"loose":true}],
         ["syntax-dynamic-import"],
-        ["transform-object-assign"]
+        ["transform-object-assign"],
+        ["transform-object-rest-spread"]
         ]
 }
