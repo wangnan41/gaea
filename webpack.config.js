@@ -11,6 +11,9 @@ const autoprefixer = require('autoprefixer');
 const htmlwebpackincludeassetsplugin = require('html-webpack-include-assets-plugin');
 const AddAssetHtmlPlugin = require('add-asset-html-webpack-plugin');
 const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
+const PrerenderSPAPlugin = require('prerender-spa-plugin');
+const Renderer = PrerenderSPAPlugin.PuppeteerRenderer;
+const cheerio = require('cheerio');
 
 
 const webpackConfig = module.exports = {};
@@ -27,9 +30,9 @@ webpackConfig.entry = {
 };
 
 webpackConfig.output = {
-    path: path.resolve(__dirname, 'build' + '/' + config.version),
-    publicPath: config.publicPath + '/'+config.version+'/',
-    filename: 'js/[name].js'
+    path: path.resolve(__dirname, 'build'),
+    publicPath: '/',
+    filename: config.version+'/js/[name].js'
 };
 
 webpackConfig.module = {
@@ -66,6 +69,9 @@ webpackConfig.module = {
         test: /\.js$/,
         loader: 'babel-loader',
         exclude: /node_modules/,
+    },  {
+        test: /\.svg$/,
+        loader: 'svg-sprite-loader'
     }, {
         test: /\.(png|jpg|gif|webp)$/,
         loader: 'url-loader',
@@ -80,10 +86,11 @@ webpackConfig.plugins = [
     new webpack.optimize.ModuleConcatenationPlugin(),
     new CleanWebpackPlugin('build'),
     new HtmlWebpackPlugin({
-        template: './src/index.html'
+        template: './src/index.html',
+        filename: path.resolve(__dirname, 'build/index.html'),
     }),
     new ExtractTextPlugin({
-        filename: 'css/app.css'
+        filename: config.version+'/css/app.css'
     }),
     new OptimizeCssAssetsPlugin({
       assetNameRegExp: /\.css\.*(?!.*map)$/g,
@@ -132,12 +139,37 @@ if (isProduction || isUpload) {
             
         }),
         new htmlwebpackincludeassetsplugin({
-            assets:['/lib/vendor.dll.js'],
-            publicPath:config.publicPath,
+            assets:['lib/vendor.dll.js'],
+            publicPath:'/',
             append:false
             
         }),
-        new webpack.BannerPlugin(bannerTxt)
+
+        new webpack.BannerPlugin(bannerTxt),
+        new PrerenderSPAPlugin({
+            staticDir: path.join(__dirname, 'build'),
+            routes: [ '/','/detail','/detail2' ],
+            postProcess(renderedRoute){
+                const $ = cheerio.load(renderedRoute.html);
+                $('html').removeAttr('style');
+                let cssHref = $('link').attr('href');
+                $('link').attr('href',config.publicPath+cssHref);
+                $('script').map(function(i,el){
+                    let src = $(this).attr('src');
+                    src && $(this).attr('src',config.publicPath+ src);
+                })
+                renderedRoute.html = $.html();
+                return renderedRoute;
+            },
+            renderer: new Renderer({
+             
+              inject: {
+                foo: 'bar'
+              },
+              renderAfterDocumentEvent: 'render-event',
+    
+            })
+          })
     ]);
     if (isUpload) {
         webpackConfig.plugins = (webpackConfig.plugins || []).concat([
