@@ -10,7 +10,10 @@
     "dev": "webpack-dev-server -d --open --progress",
     "build": "cross-env NODE_ENV=production webpack --hide-modules --progress",
     "upload": "cross-env NODE_ENV=upload webpack --hide-modules --progress",
-    "dll": "webpack --config ./webpack.dll.config.js"
+    "dll": "webpack --config ./webpack.dll.config.js",
+    "preHtml":"cross-env NODE_ENV=production webpack --config ./webpack.html.config.js --hide-modules --progress && rimraf ./dist/* ",
+    "clean":"rimraf dist",
+    "html":"npm run preHtml && npm run clean"
   },
   "dependencies": {},
   "devDependencies": {

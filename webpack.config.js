@@ -11,9 +11,7 @@ const autoprefixer = require('autoprefixer');
 const htmlwebpackincludeassetsplugin = require('html-webpack-include-assets-plugin');
 const AddAssetHtmlPlugin = require('add-asset-html-webpack-plugin');
 const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
-const PrerenderSPAPlugin = require('prerender-spa-plugin');
-const Renderer = PrerenderSPAPlugin.PuppeteerRenderer;
-const cheerio = require('cheerio');
+
 
 
 const webpackConfig = module.exports = {};
@@ -30,9 +28,10 @@ webpackConfig.entry = {
 };
 
 webpackConfig.output = {
-    path: path.resolve(__dirname, 'build'),
-    publicPath: '/',
-    filename: config.version+'/js/[name].js'
+    path: path.resolve(__dirname, 'build' + '/' + config.version),
+    publicPath: config.publicPath + '/'+config.version+'/',
+    filename: 'js/[name].js'
+
 };
 
 webpackConfig.module = {
@@ -40,13 +39,13 @@ webpackConfig.module = {
         test: /\.css$/,
         use: ExtractTextPlugin.extract({
             fallback: "style-loader",
-            use: [ 'css-loader?-minimize', 'postcss-loader']
+            use: ['css-loader?-minimize', 'postcss-loader']
         }),
     }, {
         test: /\.scss$/,
         use: ExtractTextPlugin.extract({
             fallback: 'style-loader',
-            use: [ 'css-loader?-minimize', 'sass-loader', 'postcss-loader']
+            use: ['css-loader?-minimize', 'sass-loader', 'postcss-loader']
 
         })
     }, {
@@ -69,46 +68,48 @@ webpackConfig.module = {
         test: /\.js$/,
         loader: 'babel-loader',
         exclude: /node_modules/,
-    },  {
+    }, {
         test: /\.svg$/,
         loader: 'svg-sprite-loader'
     }, {
-        test: /\.(png|jpg|gif|webp)$/,
+        test: /\.(png|jpg|gif|webp|woff|eot|ttf)$/,
         loader: 'url-loader',
         options: {
             limit: 3000,
-            name: 'img/[name].[ext]',
+            name: 'img/[name].[ext]'
         }
     }, ]
-};
+}
+webpackConfig.resolve = {
+        extensions: ['.vue', '.js', '.jsx']
+    }
+    webpackConfig.plugins = [
+        new webpack.optimize.ModuleConcatenationPlugin(),
+        new CleanWebpackPlugin('build'),
+        // new HtmlWebpackPlugin({
+        //     template: './src/index.html'
 
-webpackConfig.plugins = [
-    new webpack.optimize.ModuleConcatenationPlugin(),
-    new CleanWebpackPlugin('build'),
-    new HtmlWebpackPlugin({
-        template: './src/index.html',
-        filename: path.resolve(__dirname, 'build/index.html'),
-    }),
-    new ExtractTextPlugin({
-        filename: config.version+'/css/app.css'
-    }),
-    new OptimizeCssAssetsPlugin({
-      assetNameRegExp: /\.css\.*(?!.*map)$/g,
-      cssProcessorOptions: { 
-        discardComments:{removeAll:true},
-        safe: true,
-        autoprefixer:false,
-      },
-     
-    }),
-    new CopyWebpackPlugin([
-        { from: path.join(__dirname, "./static/"), to: path.join(__dirname, "./build/lib") }
-    ]),
-    new webpack.DllReferencePlugin({
-        context:__dirname,
-        manifest:require('./vendor-manifest.json')
-    })
-];
+        // }),
+        new ExtractTextPlugin({
+            filename: 'css/app.css'
+        }),
+        new OptimizeCssAssetsPlugin({
+            assetNameRegExp: /\.css\.*(?!.*map)$/g,
+            cssProcessorOptions: {
+                discardComments: { removeAll: true },
+                safe: true,
+                autoprefixer: false,
+            },
+
+        }),
+        new CopyWebpackPlugin([
+            { from: path.join(__dirname, "./static/"), to: path.join(__dirname, "./build/lib") }
+        ]),
+        new webpack.DllReferencePlugin({
+            context: __dirname,
+            manifest: require('./vendor-manifest.json')
+        })
+    ];
 
 if (isProduction || isUpload) {
 
@@ -122,72 +123,36 @@ if (isProduction || isUpload) {
             minimize: true
         }),
         new UglifyJsPlugin({
-            cache:true,
-            sourceMap:false,
-            parallel:4,
+            cache: true,
+            sourceMap: false,
+            parallel: 4,
             uglifyOptions: {
-                ecma:8,
-                warnings:false,
-                compress:{
-                    drop_console:true,
+                ecma: 8,
+                warnings: false,
+                compress: {
+                    drop_console: true,
                 },
-                output:{
-                    comments:false,
-                    beautify:false,
+                output: {
+                    comments: false,
+                    beautify: false,
                 }
             }
-            
+
         }),
         new htmlwebpackincludeassetsplugin({
-            assets:['lib/vendor.dll.js'],
-            publicPath:'/',
+            assets:['/lib/vendor.dll.js'],
+            publicPath:config.publicPath,
             append:false
             
         }),
 
         new webpack.BannerPlugin(bannerTxt),
-        new PrerenderSPAPlugin({
-            staticDir: path.join(__dirname, 'build'),
-            routes: [ '/','/detail','/detail2' ],
-            postProcess(renderedRoute){
-                const $ = cheerio.load(renderedRoute.html);
-                $('html').removeAttr('style');
-                let cssHref = $('link').attr('href');
-                $('link').attr('href',config.publicPath+cssHref);
-
-                //script
-                let scriptStr = '';
-                $('script','body').map(function(i,el){
-                    let src = $(this).attr('src');
-                    if( src &&src.indexOf('//') == -1){
-                        $(this).attr('src',config.publicPath+ src);
-                        
-                    }
-                    scriptStr += $(this).clone();
-                })
-                let appContent =  $('#app').clone();
-
-                let body = $('body');
-                body.empty();
-                $(appContent).appendTo(body);
-                $(scriptStr).appendTo(body);
-                renderedRoute.html = $.html();
-                return renderedRoute;
-            },
-            renderer: new Renderer({
-             
-              inject: {
-                foo: 'bar'
-              },
-              renderAfterDocumentEvent: 'render-event',
-    
-            })
-          })
+        
     ]);
     if (isUpload) {
         webpackConfig.plugins = (webpackConfig.plugins || []).concat([
             new WebpackUploadPlugin({
-                host: "{{uploadHost}}",//上传服务器地址
+                host: '{{uploadHost}}',
                 source: 'build',
                 serverDir: config.ftpServer,
                 target: config.ftpTarget
@@ -198,15 +163,16 @@ if (isProduction || isUpload) {
     webpackConfig.output.publicPath = '/';
     webpackConfig.devtool = '#cheap-module-eval-source-map';
     webpackConfig.plugins = (webpackConfig.plugins || []).concat([
-         new AddAssetHtmlPlugin({
-            filepath:require.resolve('./static/vendor.dll.js'),
-            includeSourcemap:false,
-            
+        new AddAssetHtmlPlugin({
+            filepath: require.resolve('./static/vendor.dll.js'),
+            includeSourcemap: false,
+
         })
     ]);
     webpackConfig.devServer = {
         contentBase: path.resolve(__dirname, 'build'),
         compress: true, //gzip压缩
-        historyApiFallback: true,
+        //host: '192.168.191.2',
+        historyApiFallback: true
     };
 }
