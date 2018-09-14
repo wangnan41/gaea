@@ -1,5 +1,5 @@
 <template>
-    <div class="row"
+    <div class="vue-skeleton-row"
         :style="{
             'alignItems': align,
             'justifyContent': justify,
@@ -43,7 +43,7 @@
 </script>
 
 <style lang="scss">
-    .row {
+    .vue-skeleton-row {
         display: flex;
         flex-direction: row;
         justify-content: space-around;

@@ -154,10 +154,23 @@ if (isProduction || isUpload) {
                 $('html').removeAttr('style');
                 let cssHref = $('link').attr('href');
                 $('link').attr('href',config.publicPath+cssHref);
-                $('script').map(function(i,el){
+
+                //script
+                let scriptStr = '';
+                $('script','body').map(function(i,el){
                     let src = $(this).attr('src');
-                    src && $(this).attr('src',config.publicPath+ src);
+                    if( src &&src.indexOf('//') == -1){
+                        $(this).attr('src',config.publicPath+ src);
+                        
+                    }
+                    scriptStr += $(this).clone();
                 })
+                let appContent =  $('#app').clone();
+
+                let body = $('body');
+                body.empty();
+                $(appContent).appendTo(body);
+                $(scriptStr).appendTo(body);
                 renderedRoute.html = $.html();
                 return renderedRoute;
             },

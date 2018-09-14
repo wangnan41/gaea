@@ -1,6 +1,6 @@
 <template>
 	<div 
-		class="circle"
+		class="vue-skeleton-circle"
 		ref="circle"
 		:style="{
 			'backgroundColor': backColor,
@@ -38,7 +38,7 @@
 </script>
 
 <style lang="scss">
-	.circle {
+	.vue-skeleton-circle {
         border-radius: 50%;
 	}
 </style>

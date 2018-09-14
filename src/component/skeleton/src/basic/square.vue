@@ -1,5 +1,5 @@
 <template>
-    <div class="square-list">
+    <div class="vue-skeleton-square-list">
         <div
              class="square"
              v-for="i in count"
@@ -43,7 +43,7 @@
 </script>
 
 <style lang="scss">
-    .square-list {
+    .vue-skeleton-square-list {
         width: 100%;
     }
 </style>

@@ -1,6 +1,6 @@
 <template>
     <div
-        class="col"
+        class="vue-skeleton-col"
         :style="{
             'order': order,
             'width': perWidth,
