@@ -144,7 +144,7 @@ if (isProduction) {
         }),
         new PrerenderSPAPlugin({
             staticDir: path.join(__dirname, 'dist'),
-            routes: [ '/appcampus'],
+            routes: [ '/','/detail','/detail2'],
             postProcess(renderedRoute){
                 const $ = cheerio.load(renderedRoute.html);
                 $('html').removeAttr('style');
