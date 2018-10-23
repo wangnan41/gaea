@@ -86,6 +86,10 @@ webpackConfig.resolve = {
     webpackConfig.plugins = [
         new webpack.optimize.ModuleConcatenationPlugin(),
         new CleanWebpackPlugin('build'),
+        new HtmlWebpackPlugin({
+            template: './src/index.html'
+
+        }),
         new ExtractTextPlugin({
             filename: 'css/app.css'
         }),
