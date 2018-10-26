@@ -101,13 +101,6 @@ webpackConfig.resolve = {
                 autoprefixer: false,
             },
 
-        }),
-        new CopyWebpackPlugin([
-            { from: path.join(__dirname, "./static/"), to: path.join(__dirname, "./build/lib") }
-        ]),
-        new webpack.DllReferencePlugin({
-            context: __dirname,
-            manifest: require('./vendor-manifest.json')
         })
     ];
 
@@ -139,14 +132,22 @@ if (isProduction || isUpload) {
             }
 
         }),
+        new webpack.DllReferencePlugin({
+            context:__dirname,
+            manifest:require('./vendor-manifest.json')
+        }),
         new htmlwebpackincludeassetsplugin({
             assets:['/lib/vendor.dll.js'],
             publicPath:config.publicPath,
             append:false
             
         }),
+        new CopyWebpackPlugin([
+            { from: path.join(__dirname, "./static/vendor.dll.js"), to: path.join(__dirname, "./build/lib/vendor.dll.js") }
+        ]),
 
         new webpack.BannerPlugin(bannerTxt),
+        
         
     ]);
     if (isUpload) {
@@ -167,8 +168,12 @@ if (isProduction || isUpload) {
             template: './src/index.html'
 
         }),
+        new webpack.DllReferencePlugin({
+            context:__dirname,
+            manifest:require('./vendordev-manifest.json')
+        }),
         new AddAssetHtmlPlugin({
-            filepath: require.resolve('./static/vendor.dll.js'),
+            filepath: require.resolve('./static/vendordev.dll.js'),
             includeSourcemap: false,
 
         })

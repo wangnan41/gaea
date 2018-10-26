@@ -12,10 +12,17 @@ const bannerTxt = config.name + ' ' + config.version + ' ' + curTime;
 const vendorStr = "{{bucket}}";
 const vendor = vendorStr.split(',');
 
+const vendor = ['vue'];
+vendor = vendor.concat(vendorStr.split(','));
+const vendordev=['vue/dist/vue.esm.js'];
+vendordev =vendordev.concat(vendorStr.split(','));
+
+
 module.exports = {
 	//你想要打包的模块数组
 	entry:{
-		vendor:vendor
+		vendor:vendor,
+		vendordev:vendordev
 	},
 	output:{
 		path:path.join(__dirname,'/static/'),
@@ -26,7 +33,7 @@ module.exports = {
 		//故这里需要和webpack.DllPlugin 中的 'name :[name]_libray 保持一致
 	},
 	plugins:[
-		new CleanWebpackPlugin(['static','vendor-manifest.json']),
+		new CleanWebpackPlugin(['static','vendor-manifest.json','vendordev-manifest.json']),
 		new webpack.DllPlugin({
 			path:path.join(__dirname,'.','[name]-manifest.json'),
 			name:'[name]_library',
