@@ -10,11 +10,10 @@ const curTime = curDate.getFullYear() + '/' + (curDate.getMonth() + 1) + '/' + c
 const bannerTxt = config.name + ' ' + config.version + ' ' + curTime; 
 
 const vendorStr = "{{bucket}}";
-const vendor = vendorStr.split(',');
 
-const vendor = ['vue'];
+let vendor = ['vue'];
 vendor = vendor.concat(vendorStr.split(','));
-const vendordev=['vue/dist/vue.esm.js'];
+let vendordev=['vue/dist/vue.esm.js'];
 vendordev =vendordev.concat(vendorStr.split(','));
 
 
